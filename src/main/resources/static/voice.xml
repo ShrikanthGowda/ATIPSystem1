@@ -1,0 +1,6 @@
+<Response>
+
+    <Say voice="woman">Hello Varsha, Your interview have been scheduled </Say>
+    <Say voice="woman" loop="1">What is Java</Say>
+     <Record timeout="5" action="/twilioxml1" transcribe="true"></Record>
+</Response>

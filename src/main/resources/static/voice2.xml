@@ -1,0 +1,6 @@
+<Response>
+
+    <Say voice="woman">Hello Varsha, Going Good </Say>
+    <Say voice="woman" loop="1">What Is Twilio API ?</Say>
+     <Record timeout="5" action="/twilioxml3" transcribe="true"></Record>
+</Response>
