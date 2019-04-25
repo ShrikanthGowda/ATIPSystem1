@@ -1,4 +1,4 @@
-package com.globallogic.hacks.globalhack;
+package com.globallogic.hack.globalhack;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
