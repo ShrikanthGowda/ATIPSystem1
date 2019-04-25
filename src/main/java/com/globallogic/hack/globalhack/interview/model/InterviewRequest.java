@@ -1,4 +1,4 @@
-package com.globallogic.hacks.interview.model;
+package com.globallogic.hack.globalhack.interview.model;
 
 import org.springframework.beans.factory.annotation.Value;
 

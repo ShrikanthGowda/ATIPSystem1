@@ -1,19 +1,18 @@
-package com.globallogic.hacks.globalhack.controller;
-
-
+package com.globallogic.hack.globalhack.interview.controller;
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class TwillioController {
+public class TwiXmlController {
 
   @RequestMapping(value = "/twilioxml", method = RequestMethod.POST,produces = "application/xml")
   @ResponseBody
   public ClassPathResource getFile() {
-    return new ClassPathResource("voice.xml");
+    return new ClassPathResource("static/voice.xml");
   }
 
   @RequestMapping(value = "/twilioxml1", method = RequestMethod.POST,produces = "application/xml")
