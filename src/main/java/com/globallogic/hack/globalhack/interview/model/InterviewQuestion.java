@@ -23,6 +23,18 @@ public class InterviewQuestion {
   @Column(name = "subject", nullable = false)
   private String subject;
 
+  @NotNull
+  @Column(name = "model_answer", nullable = false)
+  private String modelAnswer;
+
+  public String getModelAnswer() {
+    return modelAnswer;
+  }
+
+  public void setModelAnswer(String modelAnswer) {
+    this.modelAnswer = modelAnswer;
+  }
+
   public int getQuestionId() {
     return questionId;
   }

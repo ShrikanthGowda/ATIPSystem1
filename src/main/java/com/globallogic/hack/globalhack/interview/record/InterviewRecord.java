@@ -13,9 +13,19 @@ public class InterviewRecord {
 
   private String URL;
 
-  @ManyToOne
-  @JoinColumn
-  private InterviewRequest candidateId;
+  private int questionId;
+
+  public int getQuestionId() {
+    return questionId;
+  }
+
+  public void setQuestionId(int questionId) {
+    this.questionId = questionId;
+  }
+
+ /* @ManyToOne
+  @JoinColumn*/
+  private Integer candidateId;
 
   public int getId() {
     return id;
@@ -33,11 +43,11 @@ public class InterviewRecord {
     this.URL = URL;
   }
 
-  public InterviewRequest getCandidateId() {
+  public Integer getCandidateId() {
     return candidateId;
   }
 
-  public void setCandidateId(InterviewRequest candidateId) {
+  public void setCandidateId(Integer candidateId) {
     this.candidateId = candidateId;
   }
 }

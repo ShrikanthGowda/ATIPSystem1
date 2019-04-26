@@ -28,13 +28,23 @@ public class CandidateInteractionServiceImpl {
 
     Integer minOrder = interviewQuestionnairesRepository.findMinOrder(subject);
 
-    say.setContent("Hello " + candidateName + " hope you remember your interview have been scheduled with Global Logic" +
-            "all the best for your interview and here it starts");
+    InterviewQuestion interviewQuestion = interviewQuestionnairesRepository.findQuestion(subject, minOrder);
+    InterviewQuestion nextInterviewQuestion = interviewQuestionnairesRepository.findQuestion(subject, minOrder+1);
+
+
     say.setVoice(voice);
 
     record.setTimeout(timeOut);
     if (minOrder != null) {
-      record.setAction("/interviewQuestion/" + subject + "/" + minOrder+"/"+candidateId);
+      say.setContent(
+          "Hello " + candidateName + " hope you  remember your interview have been scheduled with Global Logic" + "all the best for your interview and here it starts" + interviewQuestion.getQuestion());
+    }
+    else{
+        say.setContent("Hello " + candidateName + " hope you remember your interview have been scheduled with Global Logic"
+            + "all the best for your interview and here it starts");
+      }
+      if (nextInterviewQuestion != null) {
+        record.setAction("/interviewQuestion/" + subject + "/" +(++minOrder)+"/"+candidateId+"/"+interviewQuestion.getQuestionId());
     }
     else {
       record.setAction("/interview/hangup");
@@ -61,10 +71,10 @@ public class CandidateInteractionServiceImpl {
 
     record.setTimeout(timeOut);
     if(nextInterviewQuestion != null) {
-      record.setAction("/interviewQuestion/" + subject + "/" + nextInterviewQuestion.getQuestionOrder()+"/"+candidateId);
+      record.setAction("/interviewQuestion/" + subject + "/" + nextInterviewQuestion.getQuestionOrder()+"/"+candidateId+"/"+interviewQuestion.getQuestionId());
     }
     else {
-      record.setAction("/interview/hangup/"+candidateId);
+      record.setAction("/interview/hangup/"+candidateId+"/"+interviewQuestion.getQuestionId());
     }
     record.setTranscribe(transcribe);
 
