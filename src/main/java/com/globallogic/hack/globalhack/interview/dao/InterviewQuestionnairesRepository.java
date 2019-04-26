@@ -13,5 +13,10 @@ public interface InterviewQuestionnairesRepository extends JpaRepository<Intervi
   @Query("SELECT i FROM InterviewQuestion i WHERE i.subject = :subject AND i.questionOrder = :order")
   InterviewQuestion findQuestion(@Param("subject") String subject, @Param("order") Integer order);
 
+  @Query("Select i.modelAnswer from InterviewQuestion i  where i.questionId=:questId")
+  String findModelAnswer(@Param("questId") Integer questionId);
+
+
+
 
 }

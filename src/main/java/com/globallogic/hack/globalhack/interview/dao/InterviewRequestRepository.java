@@ -18,4 +18,7 @@ public interface InterviewRequestRepository extends JpaRepository<InterviewReque
 
   @Query("Select r from InterviewRequest r  where r.phoneNumber = :phoneNumber")
   InterviewRequest findByPhoneNumber(@Param("phoneNumber") Long phoneNumber);
+
+  @Query("Select r from InterviewRequest r  where r.status = :status")
+  InterviewRequest findByStatus(@Param("status") String status);
 }
