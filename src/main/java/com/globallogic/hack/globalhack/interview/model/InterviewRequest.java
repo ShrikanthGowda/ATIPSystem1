@@ -1,11 +1,10 @@
 package com.globallogic.hack.globalhack.interview.model;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -18,7 +17,7 @@ public class InterviewRequest {
 
   private char subject;
 
-  private Date interview_date;
+  private Timestamp interviewDate;
 
   private long phoneNumber;
 
@@ -56,12 +55,13 @@ public class InterviewRequest {
     this.subject = subject;
   }
 
-  public Date getInterview_date() {
-    return interview_date;
+  public Timestamp getInterviewDate() {
+    return interviewDate;
   }
 
-  public void setInterview_date(Date interview_date) {
-    this.interview_date = interview_date;
+  public void setInterviewDate(Timestamp interviewDate) {
+    new Date();
+    this.interviewDate = interviewDate;
   }
 
   public long getPhoneNumber() {
