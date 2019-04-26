@@ -1,5 +1,0 @@
-<Response>
-    <Say voice="woman">What is Difference between Abstraction and Inheritance</Say>
-    <Record timeout="5" transcribe="true"  action = "/twilioxml2"/>
-
-</Response>
