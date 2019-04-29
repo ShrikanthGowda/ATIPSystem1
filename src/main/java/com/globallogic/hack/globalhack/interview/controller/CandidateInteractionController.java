@@ -30,12 +30,12 @@ public class CandidateInteractionController {
   @Autowired
   InterviewRecordRepository interviewRecordRepository;
 
-  @RequestMapping(value = "/interview/{candidateId}/{candidateName}/{subject}", method = RequestMethod.POST, produces = "application/xml")
+  @RequestMapping(value = "/interview/{candidateId}/{subject}", method = RequestMethod.POST, produces = "application/xml")
   @ResponseBody
-  public Response greetCandidate(@PathVariable(name = "candidateId") Integer candidateId, @PathVariable(name = "candidateName") String candidateName ,@PathVariable(name = "subject") String subject)
+  public Response greetCandidate(@PathVariable(name = "candidateId") Integer candidateId, @PathVariable(name = "subject") String subject)
           throws Exception{
 
-    Response response = candidateInteractionService.greetCandidate(subject, candidateName, candidateId);
+    Response response = candidateInteractionService.greetCandidate(subject, candidateId);
     return response;
   }
 

@@ -20,7 +20,7 @@ public class CandidateInteractionServiceImpl {
 
 
 
-  public Response greetCandidate(String subject, String candidateName, Integer candidateId) {
+  public Response greetCandidate(String subject,Integer candidateId) {
 
     Say say = new Say();
     Record record = new Record();
@@ -37,11 +37,11 @@ public class CandidateInteractionServiceImpl {
     record.setTimeout(timeOut);
     if (minOrder != null) {
       say.setContent(
-          "Hello " + candidateName + " hope you  remember your interview have been scheduled with Global Logic" + "all the best for your interview and here it starts" + interviewQuestion.getQuestion());
+          "Hello, " + " hope you  remember your interview have been scheduled with Global Logic. " + "All the best for your interview and here it starts. " + interviewQuestion.getQuestion());
     }
     else{
-        say.setContent("Hello " + candidateName + " hope you remember your interview have been scheduled with Global Logic"
-            + "all the best for your interview and here it starts");
+        say.setContent("Hello, " + " hope you remember your interview have been scheduled with Global Logic."
+            + "All the best for your interview and here it starts.");
       }
       if (nextInterviewQuestion != null) {
         record.setAction("/interviewQuestion/" + subject + "/" +(++minOrder)+"/"+candidateId+"/"+interviewQuestion.getQuestionId());
