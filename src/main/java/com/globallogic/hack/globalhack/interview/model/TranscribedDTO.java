@@ -4,20 +4,12 @@ public class TranscribedDTO {
 
   String modelAnswer;
 
-  public TranscribedDTO(String modelAnswer, String transcribedAnswer) {
+  public TranscribedDTO(String modelAnswer, String answer) {
     this.modelAnswer = modelAnswer;
-    this.transcribedAnswer = transcribedAnswer;
+    this.answer = answer;
   }
 
-  String transcribedAnswer;
-
-  public String getTranscribedAnswer() {
-    return transcribedAnswer;
-  }
-
-  public void setTranscribedAnswer(String transcribedAnswer) {
-    this.transcribedAnswer = transcribedAnswer;
-  }
+  String answer;
 
   public String getModelAnswer() {
     return modelAnswer;
@@ -25,5 +17,17 @@ public class TranscribedDTO {
 
   public void setModelAnswer(String modelAnswer) {
     this.modelAnswer = modelAnswer;
+  }
+
+  public String getAnswer() {
+    return answer;
+  }
+
+  public void setAnswer(String answer) {
+    this.answer = answer;
+  }
+
+  @Override public String toString() {
+    return "TranscribedDTO{" + "modelAnswer='" + modelAnswer + '\'' + ", answer='" + answer + '\'' + '}';
   }
 }

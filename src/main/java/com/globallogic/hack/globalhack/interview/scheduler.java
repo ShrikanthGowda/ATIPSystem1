@@ -1,9 +1,11 @@
 package com.globallogic.hack.globalhack.interview;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globallogic.hack.globalhack.interview.dao.InterviewQuestionnairesRepository;
 import com.globallogic.hack.globalhack.interview.dao.InterviewRecordRepository;
 import com.globallogic.hack.globalhack.interview.dao.InterviewRequestRepository;
 import com.globallogic.hack.globalhack.interview.model.InterviewRequest;
+import com.globallogic.hack.globalhack.interview.model.ScoreResponseDTO;
 import com.globallogic.hack.globalhack.interview.model.TranscribedDTO;
 import com.globallogic.hack.globalhack.interview.record.InterviewRecord;
 import com.google.cloud.speech.v1.*;
@@ -11,6 +13,7 @@ import com.google.protobuf.ByteString;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Call;
 import com.twilio.type.PhoneNumber;
+import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +33,16 @@ import java.util.Set;
 @Service
 public class scheduler {
 
+  @Autowired
+  ObjectMapper objectMapper;
 
-  public static final  String ACCOUNT_SID = "AC21eeaf9d83cf9ddb8f325fb434122dec";
+  @Autowired
+  OkHttpClient okHttpClient;
+
+  public static final  String ACCOUNT_SID = "AC21eeaf9d83cf9ddb8f325fb434122dec";//"AC21eeaf9d83cf9ddb8f325fb434122dec";
 
 
-  public static final String AUTH_TOKEN = "d44d7795d4c93457deec1b045ff00b98";
+  public static final String AUTH_TOKEN = "d44d7795d4c93457deec1b045ff00b98";//"d44d7795d4c93457deec1b045ff00b98";
 
   //@Value("${server.port}")
   private String serverPort="6090";
@@ -60,8 +68,8 @@ public class scheduler {
 
   public void callToCandidate(InterviewRequest request) throws Exception {
     Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-    String from = "+12015290698";
-    Call.creator(new PhoneNumber(String.valueOf(request.getPhoneNumber())), new PhoneNumber(from), new URI("http://68.183.92.11:"+serverPort+"/interview/"+request.getId()+"/"+request.getCandidateName()+"/"+request.getSubject())).create();
+    String from = "+12015290698";//"+12015290698";
+    Call.creator(new PhoneNumber(String.valueOf(request.getPhoneNumber())), new PhoneNumber(from), new URI("http://134.209.153.28:"+serverPort+"/interview/"+request.getId()+"/"+request.getSubject())).create();
   }
 
 
@@ -78,27 +86,24 @@ public class scheduler {
        List<InterviewRecord> interviewRecords = recordRepository.findAllByCandidateId(requestId);
        for (InterviewRecord record : interviewRecords) {
          System.out.println("In Loop");
-       //  String transcribedScript = transcribeData(record.getURL());
+        String transcribedScript = transcribeData(record.getURL());
 
          String modelAnswer = questionnairesRepository.findModelAnswer(record.getQuestionId());
-         //TranscribedDTO transcribedDTO = new TranscribedDTO(modelAnswer, transcribedScript);
-         //transcribedDTOS.add(transcribedDTO);
-//
-       }
-       for (TranscribedDTO transcribedDTO : transcribedDTOS) {
-         System.out.println("Model Answer :" + transcribedDTO.getModelAnswer());
-         System.out.println("Transcribed Answer :" + transcribedDTO.getTranscribedAnswer());
+         TranscribedDTO transcribedDTO = new TranscribedDTO(modelAnswer, transcribedScript);
+         transcribedDTOS.add(transcribedDTO);
 
        }
+       Integer score= getScore(transcribedDTOS);
+       notifyScore(interviewRequest.getId(), score);
      }
 
   }
 
-  public static void main(String[] args) throws Exception {
+  public String transcribeData(String audioURL) throws Exception {
     StringBuilder builder = new StringBuilder();
 
     try (SpeechClient speech = SpeechClient.create()) {
-      Path path = Paths.get("/Users/darshan/Desktop/sample_audio_one.wav");
+      Path path = Paths.get(audioURL);
       byte[] data = Files.readAllBytes(path);
       ByteString audioBytes = ByteString.copyFrom(data);
 
@@ -118,12 +123,39 @@ public class scheduler {
       }
     }
 
-   // return builder.toString();
+    return builder.toString();
   }
 
 
+public Integer getScore(List<TranscribedDTO> transcribedDTOS) throws Exception{
+ MediaType JSON = MediaType.get("application/json; charset=utf-8");
+ String jsonValue = objectMapper.writeValueAsString(transcribedDTOS);
+  RequestBody requestBody = RequestBody.create(JSON,jsonValue);
+  final Request request = new Request.Builder()
+      .url("http://localhost:8555/calculate-score")
+      .post(requestBody)
+      .build();
+
+  System.out.println("Printing the json:"+jsonValue);
+  final Response response = okHttpClient.newCall(request).execute();
+  String responseString = response.body().string();
+  ScoreResponseDTO scoreResponseDTO = objectMapper.readValue(responseString, ScoreResponseDTO.class);
+  System.out.println("Printing score"+scoreResponseDTO);
+  return scoreResponseDTO.getPayload().getScore();
+}
 
 
 
+
+  public void notifyScore(Integer interviewId, Integer scoreId) throws Exception{
+
+    final Request request = new Request.Builder()
+        .url("http://localhost:3000/notify-done/"+interviewId+"-"+scoreId)
+        .get()
+        .build();
+
+    okHttpClient.newCall(request).execute();
+
+  }
 
 }
