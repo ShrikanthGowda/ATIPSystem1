@@ -50,7 +50,7 @@ public class CandidateInteractionController {
     InterviewRecord interviewRecord = new InterviewRecord();
     interviewRecord.setCandidateId(request.getId());
     String ServerPath = "/root/darshan/"+recordingId+".wav";
-    downloadWithJavaNIO("https://api.twilio.com/2010-04-01/Accounts/AC21eeaf9d83cf9ddb8f325fb434122dec/Recordings/"+recordingId,ServerPath);
+    downloadWithJavaNIO("https://api.twilio.com/2010-04-01/Accounts/AC73bd00a32a6d302a24dcf43173ed7047/Recordings/"+recordingId,ServerPath);
     interviewRecord.setURL(ServerPath);
     interviewRecord.setQuestionId(questionId);
     interviewRecordRepository.save(interviewRecord);
@@ -67,7 +67,7 @@ public class CandidateInteractionController {
     InterviewRecord interviewRecord = new InterviewRecord();
     interviewRecord.setCandidateId(request.getId());
     String ServerPath = "/root/darshan/"+recordingId+".wav";
-    downloadWithJavaNIO("https://api.twilio.com/2010-04-01/Accounts/AC21eeaf9d83cf9ddb8f325fb434122dec/Recordings/"+recordingId,ServerPath);
+    downloadWithJavaNIO("https://api.twilio.com/2010-04-01/Accounts/AC73bd00a32a6d302a24dcf43173ed7047/Recordings/"+recordingId,ServerPath);
     interviewRecord.setURL(ServerPath);
     interviewRecord.setQuestionId(questionId);
     interviewRecordRepository.save(interviewRecord);
