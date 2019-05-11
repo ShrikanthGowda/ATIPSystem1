@@ -26,6 +26,7 @@ public class InterviewRequestController {
 
   @RequestMapping(value = "/interview", method = RequestMethod.POST) public ResponseEntity<String> saveInterviewDetail(
       @RequestBody InterviewRequest interviewRequest) {
+    System.out.println("********2"+interviewRequest.getInterviewDate());
     InterviewRequest interviewRequest1 = interviewService.saveInterviewDetail(interviewRequest);
     return new ResponseEntity<String>(String.valueOf(interviewRequest1.getId()), HttpStatus.CREATED);
   }

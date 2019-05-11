@@ -60,6 +60,7 @@ public class InterviewRequest {
   }
 
   public void setInterviewDate(Timestamp interviewDate) {
+    System.out.println("*********1 "+interviewDate);
     new Date();
     this.interviewDate = interviewDate;
   }

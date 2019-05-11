@@ -39,13 +39,13 @@ public class scheduler {
   @Autowired
   OkHttpClient okHttpClient;
 
-  public static final  String ACCOUNT_SID = "AC21eeaf9d83cf9ddb8f325fb434122dec";//"AC21eeaf9d83cf9ddb8f325fb434122dec";
+  public static final  String ACCOUNT_SID = "AC73bd00a32a6d302a24dcf43173ed7047";//"AC21eeaf9d83cf9ddb8f325fb434122dec";
 
 
-  public static final String AUTH_TOKEN = "d44d7795d4c93457deec1b045ff00b98";//"d44d7795d4c93457deec1b045ff00b98";
+  public static final String AUTH_TOKEN = "1071d1e54d7e1935bce62947b56d0097";//"d44d7795d4c93457deec1b045ff00b98";
 
-  //@Value("${server.port}")
-  private String serverPort="6090";
+  @Value("${server.port}")
+  private String serverPort;//="9090";
 
   @Autowired
   InterviewRequestRepository repository;
@@ -68,7 +68,7 @@ public class scheduler {
 
   public void callToCandidate(InterviewRequest request) throws Exception {
     Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-    String from = "+12015290698";//"+12015290698";
+    String from = "+17752776776";//"+12015290698";
     Call.creator(new PhoneNumber(String.valueOf(request.getPhoneNumber())), new PhoneNumber(from), new URI("http://134.209.153.28:"+serverPort+"/interview/"+request.getId()+"/"+request.getSubject())).create();
   }
 
@@ -76,25 +76,27 @@ public class scheduler {
   @Scheduled(initialDelay = 20000, fixedRate = 20000)
   public void getRecordsToTranscribe() throws Exception{
     List<TranscribedDTO> transcribedDTOS = new ArrayList<>();
-     InterviewRequest interviewRequest = repository.findByStatus("INT-RECORDING_DONE");
-     if(interviewRequest!=null) {
-       interviewRequest.setStatus("INT-TRANSCRIBE-PROGRESS");
-      Integer requestId =  interviewRequest.getId();
-      System.out.println("Before saving the request");
-       repository.save(interviewRequest);
-       System.out.println("After saving the request");
-       List<InterviewRecord> interviewRecords = recordRepository.findAllByCandidateId(requestId);
-       for (InterviewRecord record : interviewRecords) {
-         System.out.println("In Loop");
-        String transcribedScript = transcribeData(record.getURL());
+     List<InterviewRequest> interviewRequests = repository.findByStatus("INT-RECORDING_DONE");
+     for(InterviewRequest interviewRequest: interviewRequests) {
+       if (interviewRequest != null) {
+         interviewRequest.setStatus("INT-TRANSCRIBE-PROGRESS");
+         Integer requestId = interviewRequest.getId();
+         System.out.println("Before saving the request");
+         repository.save(interviewRequest);
+         System.out.println("After saving the request");
+         List<InterviewRecord> interviewRecords = recordRepository.findAllByCandidateId(requestId);
+         for (InterviewRecord record : interviewRecords) {
+           System.out.println("In Loop");
+           String transcribedScript = transcribeData(record.getURL());
 
-         String modelAnswer = questionnairesRepository.findModelAnswer(record.getQuestionId());
-         TranscribedDTO transcribedDTO = new TranscribedDTO(modelAnswer, transcribedScript);
-         transcribedDTOS.add(transcribedDTO);
+           String modelAnswer = questionnairesRepository.findModelAnswer(record.getQuestionId());
+           TranscribedDTO transcribedDTO = new TranscribedDTO(modelAnswer, transcribedScript);
+           transcribedDTOS.add(transcribedDTO);
 
+         }
+         Integer score = getScore(transcribedDTOS);
+         notifyScore(interviewRequest.getId(), score);
        }
-       Integer score= getScore(transcribedDTOS);
-       notifyScore(interviewRequest.getId(), score);
      }
 
   }
@@ -139,6 +141,7 @@ public Integer getScore(List<TranscribedDTO> transcribedDTOS) throws Exception{
   System.out.println("Printing the json:"+jsonValue);
   final Response response = okHttpClient.newCall(request).execute();
   String responseString = response.body().string();
+
   ScoreResponseDTO scoreResponseDTO = objectMapper.readValue(responseString, ScoreResponseDTO.class);
   System.out.println("Printing score"+scoreResponseDTO);
   return scoreResponseDTO.getPayload().getScore();
@@ -149,9 +152,11 @@ public Integer getScore(List<TranscribedDTO> transcribedDTOS) throws Exception{
 
   public void notifyScore(Integer interviewId, Integer scoreId) throws Exception{
 
+    MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    RequestBody requestBody = RequestBody.create(JSON,"{}");
     final Request request = new Request.Builder()
-        .url("http://localhost:3000/notify-done/"+interviewId+"-"+scoreId)
-        .get()
+        .url("http://localhost:3000/interview/updateScore?int_id="+interviewId+"&score="+scoreId)
+        .put(requestBody)
         .build();
 
     okHttpClient.newCall(request).execute();

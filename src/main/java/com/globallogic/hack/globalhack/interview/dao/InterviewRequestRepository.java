@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface InterviewRequestRepository extends JpaRepository<InterviewRequest, Integer> {
@@ -20,5 +21,5 @@ public interface InterviewRequestRepository extends JpaRepository<InterviewReque
   InterviewRequest findByPhoneNumber(@Param("phoneNumber") Long phoneNumber);
 
   @Query("Select r from InterviewRequest r  where r.status = :status")
-  InterviewRequest findByStatus(@Param("status") String status);
+  List<InterviewRequest> findByStatus(@Param("status") String status);
 }
