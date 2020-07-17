@@ -39,10 +39,10 @@ public class scheduler {
   @Autowired
   OkHttpClient okHttpClient;
 
-  public static final  String ACCOUNT_SID = "AC73bd00a32a6d302a24dcf43173ed7047";//"AC21eeaf9d83cf9ddb8f325fb434122dec";
+  public static final  String ACCOUNT_SID = "###ACCOUNT_SID###";
 
 
-  public static final String AUTH_TOKEN = "1071d1e54d7e1935bce62947b56d0097";//"d44d7795d4c93457deec1b045ff00b98";
+  public static final String AUTH_TOKEN = "###AUTH_TOKEN###";
 
   @Value("${server.port}")
   private String serverPort;//="9090";
